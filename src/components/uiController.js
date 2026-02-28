@@ -78,49 +78,48 @@ export default class UIController {
     });
   }
 
-    // Create a single todo element
-    createTodoElement(todo) {
-        const div = document.createElement('div');
-        div.className = 'todo-item';
-        div.dataset.todoId = todo.id;
-        
-        const dueDate = todo.dueDate ? new Date(todo.dueDate).toLocaleDateString() : 'No date';
-        const progress = todo.getProgress();
-        
-        console.log('Todo:', todo.title, 'Progress:', progress, 'Checklist:', todo.checklist);
-        console.log('Right before HTML - progress for', todo.title, 'is:', progress);
+  // Create a single todo element
+  createTodoElement(todo) {
+    const div = document.createElement('div');
+    div.className = 'todo-item';
+    div.dataset.todoId = todo.id;
+    
+    const dueDate = todo.dueDate ? new Date(todo.dueDate).toLocaleDateString() : 'No date';
+    const progress = todo.getProgress();
+    
+    console.log('Todo:', todo.title, 'Progress:', progress, 'Checklist:', todo.checklist);
+    console.log('Right before HTML - progress for', todo.title, 'is:', progress);
 
-        div.innerHTML = `
-        <div class="todo-check ${todo.completed ? 'completed' : ''}"></div>
-        <div class="todo-content">
-            <div class="todo-title-row">
-            <span class="todo-title">${todo.title}</span>
-            <span class="todo-priority priority-${todo.priority}"></span>
-            </div>
-            <div class="todo-meta">
-  <span class="todo-date">${dueDate}</span>
-  <span class="todo-progress-bar" data-debug-progress="${progress}">
-    <span class="todo-progress-fill" style="width: ${progress}%"></span>
-  </span>
-</div>
+    div.innerHTML = `
+      <div class="todo-check ${todo.completed ? 'completed' : ''}"></div>
+      <div class="todo-content">
+        <div class="todo-title-row">
+          <span class="todo-title">${todo.title}</span>
+          <span class="todo-priority priority-${todo.priority}"></span>
         </div>
-        `;
-        console.log('HTML for', todo.title, 'has width:', progress + '%');
+        <div class="todo-meta">
+          <span class="todo-date">${dueDate}</span>
+          <span class="todo-progress-bar" data-debug-progress="${progress}">
+            <span class="todo-progress-fill" style="width: ${progress}%"></span>
+          </span>
+        </div>
+      </div>
+    `;
+    console.log('HTML for', todo.title, 'has width:', progress + '%');
 
-        // Force a reflow and check computed style
-        div.offsetHeight; // Force reflow
-        setTimeout(() => {
-            const fill = div.querySelector('.todo-progress-fill');
-            if (fill) {
-                const width = window.getComputedStyle(fill).width;
-                console.log('Computed width for', todo.title, ':', width);
-            }
-        }, 100);
+    // Force a reflow and check computed style
+    div.offsetHeight;
+    setTimeout(() => {
+      const fill = div.querySelector('.todo-progress-fill');
+      if (fill) {
+        const width = window.getComputedStyle(fill).width;
+        console.log('Computed width for', todo.title, ':', width);
+      }
+    }, 100);
 
-        return div;  // ← ADD THIS
-    }  // ← ADD THIS
+    return div;
+  }
 
- 
   // Render empty state (no projects)
   renderEmptyState() {
     this.activeTitleElement.textContent = 'NO FOCUS AREAS';
@@ -142,6 +141,55 @@ export default class UIController {
     `;
   }
 
+  // ===== NEW METHODS FOR PROJECT MODAL =====
+  // Show new project modal
+  showNewProjectModal() {
+    const modal = document.getElementById('project-modal');
+    const input = document.getElementById('project-name-input');
+    input.value = '';
+    modal.classList.add('active');
+    input.focus();
+    
+    // Handle Enter key
+    const handleKeyPress = (e) => {
+      if (e.key === 'Enter') {
+        this.createNewProject();
+      }
+    };
+    input.addEventListener('keypress', handleKeyPress, { once: true });
+  }
+
+  // Hide modal
+  hideModal() {
+    const modal = document.getElementById('project-modal');
+    modal.classList.remove('active');
+  }
+
+  // Create new project
+  createNewProject() {
+    const input = document.getElementById('project-name-input');
+    const projectName = input.value.trim();
+    
+    if (!projectName) return;
+    
+    // Import Project class dynamically
+    import('./project.js').then(module => {
+      const Project = module.default;
+      const newProject = new Project(projectName);
+      this.projectList.addProject(newProject);
+      
+      // Set as active project
+      this.projectList.setActiveProject(newProject.id);
+      
+      // Re-render
+      this.renderSidebar();
+      this.renderMain();
+      
+      this.hideModal();
+    });
+  }
+  // ===== END NEW METHODS =====
+
   // Attach event listeners
   attachEventListeners() {
     // Project click handlers
@@ -155,16 +203,30 @@ export default class UIController {
       }
     });
 
-    // New project button
+    // New project button - UPDATED
     document.getElementById('new-project-btn').addEventListener('click', () => {
-      // We'll implement this next
-      console.log('New project clicked');
+      this.showNewProjectModal();
     });
 
     // New todo button
     document.getElementById('new-todo-btn').addEventListener('click', () => {
-      // We'll implement this next
       console.log('New todo clicked');
+    });
+
+    // Modal buttons - ADD THESE
+    document.getElementById('cancel-project-btn').addEventListener('click', () => {
+      this.hideModal();
+    });
+
+    document.getElementById('save-project-btn').addEventListener('click', () => {
+      this.createNewProject();
+    });
+
+    // Close modal on Escape key - ADD THIS
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.hideModal();
+      }
     });
   }
 }
