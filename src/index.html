@@ -55,5 +55,41 @@
             </div>
         </div>
     </div>
+
+    <!-- New Todo Modal -->
+    <div id="todo-modal" class="modal">
+        <div class="modal-content">
+            <h3>NEW COMMITMENT</h3>
+            
+            <input type="text" id="todo-title-input" placeholder="Title..." class="todo-input">
+            
+            <textarea id="todo-description-input" placeholder="Description..." class="todo-input" rows="2"></textarea>
+            
+            <div class="todo-row">
+                <input type="date" id="todo-date-input" class="todo-date-input">
+            
+            <select id="todo-priority-input" class="todo-select">
+                <option value="low">LOW</option>
+                <option value="medium" selected>MEDIUM</option>
+                <option value="high">HIGH</option>
+            </select>
+            </div>
+            
+            <textarea id="todo-notes-input" placeholder="Notes..." class="todo-input" rows="2"></textarea>
+            
+            <div class="todo-checklist-header">
+                <span>CHECKLIST</span>
+                <button class="btn-icon-small" id="add-checklist-item">+</button>
+            </div>
+            <div id="checklist-container" class="checklist-container">
+            <!-- Checklist items will go here -->
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" id="cancel-todo-btn">CANCEL</button>
+                <button class="btn-primary" id="save-todo-btn">CREATE</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
