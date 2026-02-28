@@ -3,10 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Project</title>
+    <title>FUTURE · todo</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <div id="content"></div>
+    <div id="content">
+        <!-- Sidebar will go here -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>FOCUS AREAS</h2>
+                <button class="btn-icon" id="new-project-btn">+</button>
+            </div>
+            <div class="projects-list" id="projects-list">
+                <!-- Projects will be injected here -->
+            </div>
+            <div class="sidebar-footer">
+                <div class="progress-overview">
+                    <span>OVERALL</span>
+                    <span id="overall-progress">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="overall-progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main content will go here -->
+        <div class="main">
+            <div class="main-header">
+                <h1 id="active-project-title">SELECT FOCUS AREA</h1>
+                <button class="btn-primary" id="new-todo-btn">+ NEW COMMITMENT</button>
+            </div>
+            <div class="todos-list" id="todos-list">
+                <!-- Todos will be injected here -->
+                <div class="empty-state">
+                    <p>No commitments in this focus area.</p>
+                    <p class="empty-sub">Create one to begin tracking.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
